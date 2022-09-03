@@ -6,10 +6,17 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - ./db:/data/db:rw
+      - ./docker-volume/db:/data/db:rw
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: pass
+  tomita:
+    build: ./tomita/
+    container_name: tomita
+    volumes:
+      - ./tomita/tomita:/data:rw
+    ports:
+      - 2022:22
 volumes:
   mongodata:

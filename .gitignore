@@ -1,1 +1,13 @@
-db/
+__pycache__
+
+# Mongo DB
+docker-volume/db/
+
+# Tomita generated file
+tomita/tomita/*.bin
+tomita/tomita/input.txt
+tomita/tomita/pretty.html
+
+# host SSH key
+tomita/id_rsa.pub
+

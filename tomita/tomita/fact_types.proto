@@ -1,0 +1,13 @@
+import "base.proto";
+import "facttypes_base.proto";
+
+message Place: NFactType.TFact
+{
+    required string Name = 1;
+}
+
+message Person: NFactType.TFact
+{
+    required string Name = 1;
+}
+
