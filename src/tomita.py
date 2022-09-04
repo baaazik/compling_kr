@@ -46,25 +46,27 @@ def run_tomita(text):
         print(traceback.format_exc())
         return None
 
-# Извлекает факты (людей, места) из результата
-def get_facts(obj):
-    pass
+def normalize_lemma(lemma):
+    return lemma \
+        .lower() \
+        .translate(TRANSLATION) \
+        .replace(' ', '_')
 
-# Заменяет в предложениях факты на униграммы
+# Находит факты и заменяет в их предложениях на униграммы
 def replace_facts(obj):
     sentenses = obj[0]['Lead']
     processed = []
     for sentense in sentenses:
         text = sentense['Text']
+        facts = set()
         for span in sentense['Span']:
             lemma = span['Lemma']
             length = len(lemma)
 
             # Нормализуем факт
-            lemma = lemma \
-                .lower() \
-                .translate(TRANSLATION) \
-                .replace(' ', '_')
+            lemma = normalize_lemma(lemma)
+
+            facts.add(lemma)
 
             # Если получившееся строка меньше исходной, дополним пробелами
             lemma = lemma.ljust(length, ' ')
@@ -73,7 +75,10 @@ def replace_facts(obj):
             start = span['StartChar']
             stop = span['StopChar']
             text = text[:start] + lemma + text[stop:]
-        processed.append(text)
+        processed.append({
+            'keys': list(facts),
+            'text': text
+        })
     return processed
 
 # Парсит вывод томиты
