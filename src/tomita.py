@@ -2,6 +2,9 @@ import argparse
 import os
 import subprocess
 import traceback
+import json
+import string
+import ctypes
 
 import common
 
@@ -11,7 +14,9 @@ TOMITA_INPUT_PATH = os.path.join(SCRIPT_DIR, '../tomita/tomita/input.txt')
 DOCKER_CONN = "root@localhost"
 DOCKER_PORT = 2022
 
-# Обрабатывает текст с помощью томита-парсера
+TRANSLATION = str.maketrans('', '', string.punctuation)
+
+# Запускает томита парсер
 def run_tomita(text):
     try:
         # Сохраняем текст в файл
@@ -41,18 +46,53 @@ def run_tomita(text):
         print(traceback.format_exc())
         return None
 
+# Извлекает факты (людей, места) из результата
+def get_facts(obj):
+    pass
+
+# Заменяет в предложениях факты на униграммы
+def replace_facts(obj):
+    sentenses = obj[0]['Lead']
+    processed = []
+    for sentense in sentenses:
+        text = sentense['Text']
+        for span in sentense['Span']:
+            lemma = span['Lemma']
+            length = len(lemma)
+
+            # Нормализуем факт
+            lemma = lemma \
+                .lower() \
+                .translate(TRANSLATION) \
+                .replace(' ', '_')
+
+            # Если получившееся строка меньше исходной, дополним пробелами
+            lemma = lemma.ljust(length, ' ')
+
+            # Заменяем факт в исходном тексте на нормализованный
+            start = span['StartChar']
+            stop = span['StopChar']
+            text = text[:start] + lemma + text[stop:]
+        processed.append(text)
+    return processed
+
+# Парсит вывод томиты
+def parse_tomita_output(output):
+    obj = json.loads(output)
+    sentenses = replace_facts(obj)
+    print(sentenses)
 
 def main():
     # db = common.get_db()
     # news_cl = db['news']
-    text = run_tomita(
-        """
-        Какой-то текст.
-        Бочаров Андрей и Илья Кошкарев пошли Казанский кафедральный собор, а затем в речной порт.
-        Еще текст.
-        """
+    out = run_tomita(
+        """Какой-то текст.
+Бочаров Андрей, Андрей Бочаров, еще один Андрей Бочаров и Илья Кошкарев пошли Казанский кафедральный собор, а затем в речной порт.
+Еще текст.
+Андрей Бочаров посетил Сергея Губанова в доме павлова."""
     )
-    print(text)
+    # print(out)
+    parse_tomita_output(out)
 
 # Парсинг аргументов командной строки
 def parse_args():
