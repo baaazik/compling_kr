@@ -4,7 +4,7 @@ import subprocess
 import traceback
 import json
 import string
-import ctypes
+import tqdm
 
 import common
 
@@ -87,17 +87,27 @@ def parse_tomita_output(output):
     sentenses = replace_facts(obj)
     print(sentenses)
 
+# Парсит статью
+def process_news(news):
+    out = run_tomita(news['text'])
+    if len(out) > 0:
+        return parse_tomita_output(out)
+    else:
+        # Ничего не найдено, томита возвращает пустую строку
+        return []
+
 def main():
-    # db = common.get_db()
-    # news_cl = db['news']
-    out = run_tomita(
-        """Какой-то текст.
-Бочаров Андрей, Андрей Бочаров, еще один Андрей Бочаров и Илья Кошкарев пошли Казанский кафедральный собор, а затем в речной порт.
-Еще текст.
-Андрей Бочаров посетил Сергея Губанова в доме павлова."""
-    )
-    # print(out)
-    parse_tomita_output(out)
+    db = common.get_db()
+    news_cl = db['news']
+    sentenses_cl = db['sentenses']
+
+    if sentenses_cl.count_documents({}) > 0:
+        print('WARNING! Overwrite existing data')
+        sentenses_cl.drop()
+
+    for i, news in enumerate(news_cl.find({}).limit(100)):
+        sentenses = process_news(news)
+        print(sentenses)
 
 # Парсинг аргументов командной строки
 def parse_args():
