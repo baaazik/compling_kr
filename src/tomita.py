@@ -84,12 +84,11 @@ def replace_facts(obj):
 # Парсит вывод томиты
 def parse_tomita_output(output):
     obj = json.loads(output)
-    sentenses = replace_facts(obj)
-    print(sentenses)
+    return replace_facts(obj)
 
 # Парсит статью
 def process_news(news):
-    out = run_tomita(news['text'])
+    out = run_tomita(news)
     if len(out) > 0:
         return parse_tomita_output(out)
     else:
@@ -105,9 +104,16 @@ def main():
         print('WARNING! Overwrite existing data')
         sentenses_cl.drop()
 
-    for i, news in enumerate(news_cl.find({}).limit(100)):
-        sentenses = process_news(news)
-        print(sentenses)
+    news_count = news_cl.count_documents({})
+
+    for news in tqdm.tqdm(news_cl.find({}), total=news_count):
+        sentenses = process_news(news['text'])
+        if sentenses:
+            sentenses_cl.insert_one({
+                'news_id': news['_id'],
+                'news_date': news['date'],
+                'sentenses': sentenses
+            })
 
 # Парсинг аргументов командной строки
 def parse_args():
