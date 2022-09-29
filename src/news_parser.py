@@ -8,7 +8,7 @@ import time
 import tqdm
 import traceback
 
-import common
+import modules.common
 
 TOTAL_PAGES = 10
 POSTS_PER_PAGE = 40

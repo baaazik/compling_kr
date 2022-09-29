@@ -3,18 +3,15 @@ import os
 import subprocess
 import traceback
 import json
-import string
 import tqdm
 
-import common
+import modules.common
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 TOMITA_INPUT_PATH = os.path.join(SCRIPT_DIR, '../tomita/tomita/input.txt')
 
 DOCKER_CONN = "root@localhost"
 DOCKER_PORT = 2022
-
-TRANSLATION = str.maketrans('', '', string.punctuation)
 
 # Запускает томита парсер
 def run_tomita(text):
@@ -46,12 +43,6 @@ def run_tomita(text):
         print(traceback.format_exc())
         return None
 
-def normalize_lemma(lemma):
-    return lemma \
-        .lower() \
-        .translate(TRANSLATION) \
-        .replace(' ', '_')
-
 # Находит факты и заменяет в их предложениях на униграммы
 def replace_facts(obj):
     sentenses = obj[0]['Lead']
@@ -64,7 +55,7 @@ def replace_facts(obj):
             length = len(lemma)
 
             # Нормализуем факт
-            lemma = normalize_lemma(lemma)
+            lemma = modules.common.clear_lemma(lemma)
 
             facts.add(lemma)
 
@@ -96,7 +87,7 @@ def process_news(news):
         return []
 
 def main():
-    db = common.get_db()
+    db = modules.common.get_db()
     news_cl = db['news']
     sentenses_cl = db['sentenses']
 

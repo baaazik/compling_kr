@@ -11,3 +11,5 @@ tomita/tomita/pretty.html
 # host SSH key
 tomita/id_rsa.pub
 
+# word2vec model
+word2vec/
