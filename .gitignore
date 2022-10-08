@@ -16,3 +16,6 @@ word2vec/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Обученная модель
+data/classifier.pickle
