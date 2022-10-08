@@ -13,3 +13,6 @@ tomita/id_rsa.pub
 
 # word2vec model
 word2vec/
+
+# Jupyter
+.ipynb_checkpoints/
