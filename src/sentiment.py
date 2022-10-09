@@ -121,14 +121,23 @@ def evaluate(text):
     return sentiment
 
 
-def main():
-    train()
+def main(cfg):
+    if cfg.train:
+        train()
+    elif cfg.predict:
+        sentiment = evaluate(cfg.predict)
+        print(sentiment)
 
 # Парсинг аргументов командной строки
 def parse_args():
     parser = argparse.ArgumentParser(description='Text sentiment analysis')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('-t', '--train', action=argparse.BooleanOptionalAction,
+        help='Train model')
+    group.add_argument('-p', '--predict', type=str,
+        help='Run model on text')
     return parser.parse_args()
 
 if __name__ == '__main__':
     cfg = parse_args()
-    main()
+    main(cfg)
