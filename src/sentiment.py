@@ -121,12 +121,34 @@ def evaluate(text):
     return sentiment
 
 
+class SentimentAnalyzer:
+    """
+    Класс, осуществляющий анализ тональности
+    """
+    def __init__(self):
+        if not os.path.exists(CLASSIFIER_FILE):
+            raise FileNotFoundError('Classifier does not exists')
+
+        with open(CLASSIFIER_FILE, 'rb') as f:
+            self.classifier = pickle.load(f)
+            self.stop_words = stopwords.words('russian')
+
+    def predict(self, text):
+        """
+        Осуществляет анализ тональности переданного текста
+        """
+        tokens = prepare_text(text, self.stop_words)
+        return self.classifier.classify(get_dict(tokens))
+
+
 def main(cfg):
     if cfg.train:
         train()
     elif cfg.predict:
-        sentiment = evaluate(cfg.predict)
+        classifier = SentimentAnalyzer()
+        sentiment = classifier.predict(cfg.predict)
         print(sentiment)
+
 
 # Парсинг аргументов командной строки
 def parse_args():
