@@ -10,15 +10,16 @@ def main(cfg):
     sentenses_cl = db['sentenses']
 
     count = sentenses_cl.count_documents({})
-    for news in tqdm.tqdm(sentenses_cl.find({}), total=count):
-        texts = [sentense['text'] for sentense in news['sentenses']]
-        text = ' '.join(texts)
+    view = sentenses_cl.find({})
+    for news in tqdm.tqdm(view, total=count):
+        # Определяем тональность
+        sentiments = [classifier.predict(sentence['text']) for sentence in news['sentenses']]
 
-        sentiment = classifier.predict(text)
+        # Формируем запрос для обновления базы
+        update_query = {f'sentenses.{i}.sentiment': sentiment for i, sentiment in enumerate(sentiments)}
         sentenses_cl.update_one(
-          {"_id": news['_id']},
-          {"$set": {'sentiment': sentiment}}
-        )
+            {'_id': news['_id']},
+            {'$set': update_query})
 
 
 # Парсинг аргументов командной строки
