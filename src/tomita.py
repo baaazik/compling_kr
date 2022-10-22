@@ -72,10 +72,42 @@ def replace_facts(obj):
         })
     return processed
 
+# Находит факты и сохраняет их
+def find_facts(obj):
+
+    found_facts = {}
+
+    fact_groups = obj[0]['FactGroup']
+    for fact_group in fact_groups:
+        fact_type = fact_group['Type']
+        facts = fact_group['Fact']
+        for fact in facts:
+            name = fact['Field'][0]['Value']
+            name = modules.common.clear_lemma(name)
+            found_facts[name] = fact_type
+
+    return found_facts
+
+# Сохраняет факт в базу
+def save_facts(facts, collection):
+    for fact, type in facts.items():
+        collection.update_one(
+            {'_id': fact},
+            {
+                '$set': {'type': type},
+                '$inc': {'count': 1}
+            },
+            upsert=True
+        )
+
 # Парсит вывод томиты
 def parse_tomita_output(output):
+    #print(output)
     obj = json.loads(output)
-    return replace_facts(obj)
+    sentenses = replace_facts(obj)
+    facts = find_facts(obj)
+    #print('---')
+    return sentenses, facts
 
 # Парсит статью
 def process_news(news):
@@ -84,27 +116,36 @@ def process_news(news):
         return parse_tomita_output(out)
     else:
         # Ничего не найдено, томита возвращает пустую строку
-        return []
+        return [], []
 
 def main():
     db = modules.common.get_db()
     news_cl = db['news']
     sentenses_cl = db['sentenses']
+    facts_cl = db['facts']
 
-    if sentenses_cl.count_documents({}) > 0:
+    if sentenses_cl.count_documents({}) > 0 or facts_cl.count_documents({}) > 0:
         print('WARNING! Overwrite existing data')
         sentenses_cl.drop()
+        facts_cl.drop()
 
     news_count = news_cl.count_documents({})
+    view = news_cl.find({})
+    for news in tqdm.tqdm(view, total=news_count):
+        sentenses, facts = process_news(news['text'])
 
-    for news in tqdm.tqdm(news_cl.find({}), total=news_count):
-        sentenses = process_news(news['text'])
+        # Добавление предложения с фактами в базу
         if sentenses:
             sentenses_cl.insert_one({
                 'news_id': news['_id'],
                 'news_date': news['date'],
                 'sentenses': sentenses
             })
+
+        # Добавление фактов в базу
+        if facts:
+            save_facts(facts, facts_cl)
+
 
 # Парсинг аргументов командной строки
 def parse_args():
