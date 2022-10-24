@@ -1,3 +1,25 @@
 {% extends "layout.html" %}
 {% block content %}
+
+<div>
+    <a href="/news?page={{curpage-1}}">назад</a>| {{curpage}}/{{pages}} | <a href="/news?page={{curpage+1}}">вперед</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <td>Заголовок</td>
+            <td>Дата</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in news %}
+        <tr>
+            <td><a href="{{item['url']}}">{{item['title']}}</a></td>
+            <td>{{item['date']}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

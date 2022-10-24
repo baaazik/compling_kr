@@ -31,3 +31,18 @@ h1, h2 {
 #content {
     padding: 8px;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead tr {
+    background-color: #eee;
+    text-align: center;
+    font-weight: bold;
+}
+
+table td {
+    border: 1px solid;
+}
