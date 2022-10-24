@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    <div id="page">
+      <h1>Контрольная работа</h1>
+      <div id="menu">
+        <a href="/news">Новости</a>
+        <a href="/facts">Факты</a>
+        <a href="/sentiment">Тональность</a>
+      </div>
+      <div id="content">
+        <h2>{{ title }}</h2>
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </body>
+</html>

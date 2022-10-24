@@ -1,0 +1,33 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+div {
+    /*box-sizing: border-box;
+    border: 1px solid;*/
+}
+
+#page {
+    width: 1024px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+#menu {
+    text-align: center;
+    font-size: larger;
+    padding: 8px;
+    background-color: #eee;
+}
+
+#menu a {
+    margin: 0px 10px;
+}
+
+#content {
+    padding: 8px;
+}
