@@ -1,3 +1,30 @@
 {% extends "layout.html" %}
 {% block content %}
+
+<div>
+    <a href="/facts?page={{curpage-1}}">назад</a>| {{curpage}}/{{pages}} | <a href="/facts?page={{curpage+1}}">вперед</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <td>Имя</td>
+            <td>Тип</td>
+            <td>Действия</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in facts %}
+        <tr>
+            <td>{{item['_id']}}</td>
+            <td>{{item['type']}}</td>
+            <td>
+                <a href="/synonyms?fact={{item['_id']}}">Синонимы</a> |
+                <a href="/sentiment?fact={{item['_id']}}">Тональность</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}
