@@ -4,11 +4,13 @@ import pymongo
 import math
 
 from modules import common
+from synonyms import SynonymFinder
 
 ITEMS_PER_PAGE = 100
 
 app = Flask(__name__)
 db = common.get_db()
+syn_finder = SynonymFinder()
 
 # Определяет номер страницы на основе аргументов
 def get_page_index():
@@ -54,6 +56,13 @@ def facts():
 @app.route('/sentiment')
 def sentiment():
     return render_template('sentiment.html', title='Тональность')
+
+@app.route('/synonyms')
+def synonyms():
+    word = request.args.get('word', '')
+    synonyms = syn_finder.find(word)
+    return render_template('synonyms.html', title='Поиск синонимов', word=word, synonyms=synonyms)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

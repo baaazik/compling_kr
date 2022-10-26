@@ -5,11 +5,12 @@
     <a href="/facts?page={{curpage-1}}">назад</a>| {{curpage}}/{{pages}} | <a href="/facts?page={{curpage+1}}">вперед</a>
 </div>
 
-<table>
+<table class="width-table">
     <thead>
         <tr>
             <td>Имя</td>
             <td>Тип</td>
+            <td>Количество</td>
             <td>Действия</td>
         </tr>
     </thead>
@@ -18,8 +19,9 @@
         <tr>
             <td>{{item['_id']}}</td>
             <td>{{item['type']}}</td>
+            <td>{{item['count']}}</td>
             <td>
-                <a href="/synonyms?fact={{item['_id']}}">Синонимы</a> |
+                <a href="/synonyms?word={{item['_id']}}">Синонимы</a> |
                 <a href="/sentiment?fact={{item['_id']}}">Тональность</a>
             </td>
         </tr>
