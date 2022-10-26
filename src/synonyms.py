@@ -11,24 +11,28 @@ def get_model():
         model = word2vec.get_word2vec_model()
     return model
 
-# Определяет синонимы для слова
-def get_synonyms(word, count=5):
-    model = get_model()
-    word = common.clear_lemma(word)
-    try:
-        return model.findSynonyms(word, count)
-    except py4j.protocol.Py4JJavaError:
-        return None
+class SynonymFinder:
+    """Класс, осуществляющий поиск синонимов"""
+    def __init__(self):
+        self.model = word2vec.get_word2vec_model()
 
+    def find(self, word, count=5):
+        word = common.clear_lemma(word)
+        try:
+            return self.model.findSynonyms(word, count).toPandas()
+        except py4j.protocol.Py4JJavaError:
+            return None
 
+# Работа в режиме интерактивной командной строки
 def interactive_mode():
+    finder = SynonymFinder()
     while True:
             try:
                 word = input('Input word: ')
-                synonyms = get_synonyms(word)
-                if synonyms:
+                synonyms = finder.find(word)
+                if synonyms is not None:
                     print('Synonyms:')
-                    synonyms.show()
+                    print(synonyms)
                 else:
                     print('No synonyms')
             except KeyboardInterrupt:

@@ -21,10 +21,6 @@ CLASSIFIER_FILE = os.path.join(DATA_DIR, 'classifier.pickle')
 
 morph = pymorphy2.MorphAnalyzer()
 
-punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~«»”—'
-TRANSLATION = str.maketrans('', '', punctuation)
-
-
 # Обрабатывает текст, удаляет шум, токенизирует
 def prepare_text(text, stop_words):
     # Удаляем ссылки
@@ -34,7 +30,7 @@ def prepare_text(text, stop_words):
     text = re.sub("(@[A-Za-z0-9_]+)","", text)
 
     # Удаляем оставшиеся знаки препинания (кроме "_")
-    text = text.translate(TRANSLATION)
+    text = text.translate(common.TRANSLATION)
 
     # Токенизируем
     tokens = word_tokenize(text, language='russian')

@@ -6,7 +6,8 @@ import string
 
 MONGO_CONN_STR = "mongodb://user:pass@localhost/test"
 
-TRANSLATION = str.maketrans('', '', string.punctuation)
+punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~«»”—'
+TRANSLATION = str.maketrans('', '', punctuation)
 
 def get_db():
     """Подключается к MongoDB и возвращает подключение к нужной базе"""

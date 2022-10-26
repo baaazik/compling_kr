@@ -7,8 +7,6 @@ import os
 
 from . import common
 
-punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~'
-TRANSLATION = str.maketrans('', '', punctuation)
 
 _SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 WORD2VEC_DIR = os.path.realpath(os.path.join(_SCRIPT_DIR, '../../word2vec/'))
@@ -42,7 +40,7 @@ def create_model():
 
     df.show()
     # Удаление пунктуации
-    df = df.rdd.map(lambda x: (x[0].translate(TRANSLATION), )).toDF(['text'])
+    df = df.rdd.map(lambda x: (x[0].translate(common.TRANSLATION), )).toDF(['text'])
     df.show()
 
     # Токенизация
