@@ -1,3 +1,49 @@
 {% extends "layout.html" %}
 {% block content %}
+
+<div>
+    <a href="/sentiment?page={{curpage-1}}">назад</a>| {{curpage}}/{{pages}} | <a href="/sentiment?page={{curpage+1}}">вперед</a>
+</div>
+
+{% for item in news %}
+<table class="sentiment-table">
+    <tr>
+        <td>Новость:</td>
+        <td><a href="{{item['news_id']}}">{{item['news_id']}}</a></td>
+    </tr>
+    <tr>
+        <td>Дата:</td>
+        <td>{{item['news_date']}}</td>
+    </tr>
+</table>
+
+<table class="items-table width-table">
+    <thead>
+        <tr>
+            <td width="200px">Факты</td>
+            <td>Предложение</td>
+            <td width="150px">Тональность</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sentense in item['sentenses'] %}
+        <tr>
+            <td>{{sentense['keys']}}</td>
+            <td>{{sentense['text']}}</td>
+            <td>
+                {% if sentense['sentiment'] == 'negative' %}
+                <font color="red">Отрицательный</font>
+                {% elif sentense['sentiment'] == 'positive' %}
+                <font color="green">Положительный</font>
+                {% else %}
+                    Нейтральный
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<hr/>
+
+{% endfor %}
 {% endblock %}

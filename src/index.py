@@ -55,8 +55,15 @@ def facts():
 # Страница оценки тональности
 @app.route('/sentiment')
 def sentiment():
-    return render_template('sentiment.html', title='Тональность')
+    sentenses_cl = db['sentenses']
+    page = get_page_index()
 
+    news = sentenses_cl.find({}).sort([('news_date', pymongo.DESCENDING)])
+    news, pages = paginate(news)
+
+    return render_template('sentiment.html', title='Тональность', news=news, pages=pages, curpage=page)
+
+# Страница поиска синонимов
 @app.route('/synonyms')
 def synonyms():
     word = request.args.get('word', '')

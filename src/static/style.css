@@ -40,12 +40,23 @@ table {
     width: 100%;
 }
 
-thead tr {
+.items-table thead tr {
     background-color: #eee;
     text-align: center;
     font-weight: bold;
 }
 
-table td {
+.items-table td {
     border: 1px solid;
+    padding: 5px;
+}
+
+.sentiment-table {
+    width: 100%;
+    background-color: #eee;
+    margin: 5px 0;
+}
+
+.sentiment-table td {
+    padding: 5px;
 }
