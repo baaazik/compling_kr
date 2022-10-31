@@ -63,6 +63,19 @@ def sentiment():
 
     return render_template('sentiment.html', title='Тональность', news=news, pages=pages, curpage=page)
 
+@app.route('/fact_sentiment')
+def fact_sentiment():
+    sentenses_cl = db['sentenses']
+    page = get_page_index()
+    fact = request.args.get('fact', '')
+
+    sentenses = sentenses_cl.find({'sentenses': {'$elemMatch': {'keys': fact}}})
+    sentenses, pages = paginate(sentenses)
+
+    return render_template('fact_sentiment.html', title='Тональность', sentenses=sentenses, fact=fact, pages=pages, curpage=page)
+
+
+
 # Страница поиска синонимов
 @app.route('/synonyms')
 def synonyms():

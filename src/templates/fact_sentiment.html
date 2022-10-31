@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<h3>Анализ тональности для факта "{{fact}}"</h3>
+<table class="items-table width-table">
+    <thead>
+        <tr>
+            <td>Предложение</td>
+            <td width="150px">Тональность</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sentense in sentenses %}
+        <tr>
+            <td>{{sentense['text']}}</td>
+            <td>
+                {% if sentense['sentiment'] == 'negative' %}
+                <font color="red">Отрицательный</font>
+                {% elif sentense['sentiment'] == 'positive' %}
+                <font color="green">Положительный</font>
+                {% else %}
+                    Нейтральный
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
